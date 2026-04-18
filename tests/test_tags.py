@@ -80,3 +80,11 @@ def test_clear_tags(tmp_tags):
 
 def test_get_tags_empty(tmp_tags):
     assert get_tags(EXPR1, path=tmp_tags) == []
+
+
+def test_tags_isolated_between_expressions(tmp_tags):
+    """Tags added to one expression should not appear on another."""
+    add_tag(EXPR1, "work", path=tmp_tags)
+    add_tag(EXPR2, "monitor", path=tmp_tags)
+    assert "monitor" not in get_tags(EXPR1, path=tmp_tags)
+    assert "work" not in get_tags(EXPR2, path=tmp_tags)

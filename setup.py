@@ -1,9 +1,14 @@
 from setuptools import setup, find_packages
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name="crontab-buddy",
     version="0.1.0",
     description="Interactively build, validate, and document cron expressions with human-readable previews",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="crontab-buddy contributors",
     python_requires=">=3.8",
     packages=find_packages(),

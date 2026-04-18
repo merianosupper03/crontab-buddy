@@ -20,6 +20,7 @@ def _print_results(results):
         print(f"  -> {desc}")
         if tags:
             print(f"  tags: {', '.join(tags)}")
+    print(f"({len(results)} result{'s' if len(results) != 1 else ''} found)")
 
 
 def cmd_search_history(query: str):

@@ -8,11 +8,22 @@ MONTH_NAMES = ["", "January", "February", "March", "April", "May", "June",
 DOW_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
-def _describe_field(value: str, unit: str, names: list = value == "*":
+def _describe_field(value: str, unit: str, names: list = None) -> str:
+    """Describe a single cron field in plain English.
+
+    Args:
+        value: The raw field value from the cron expression.
+        unit: The human-readable unit name (e.g. 'minute', 'hour').
+        names: Optional list of label names indexed by integer value (e.g. month or weekday names).
+
+    Returns:
+        A plain-English string describing the field.
+    """
+    if value == "*":
         return f"every {unit}"
-    if value.start"):
+    if value.startswith("*/"):
         step = value[2:]
-        unit}s"
+        return f"every {step} {unit}s"
     if "," in value:
         parts = value.split(",")
         labels = [names[int(p)] if names else p for p in parts]

@@ -40,6 +40,12 @@ def test_process_preserves_expression_string():
     assert results[0]["expression"] == VALID_EXPR
 
 
+def test_process_empty_list():
+    """process_expressions with an empty list should return an empty list."""
+    results = process_expressions([])
+    assert results == []
+
+
 def test_batch_summary_all_valid():
     results = process_expressions([VALID_EXPR, "* * * * *"])
     s = batch_summary(results)
@@ -56,6 +62,14 @@ def test_batch_summary_mixed():
     assert s["invalid"] == 1
 
 
+def test_batch_summary_empty():
+    """batch_summary on an empty result list should return all zeros."""
+    s = batch_summary([])
+    assert s["total"] == 0
+    assert s["valid"] == 0
+    assert s["invalid"] == 0
+
+
 def test_load_expressions_from_file(tmp_path):
     f = tmp_path / "exprs.txt"
     f.write_text("0 9 * * 1\n# comment\n\n*/5 * * * *\n")
@@ -68,3 +82,9 @@ def test_load_expressions_skips_blanks_and_comments(tmp_path):
     f.write_text("# only comments\n\n   \n")
     exprs = load_expressions_from_file(str(f))
     assert exprs == []
+
+
+def test_load_expressions_file_not_found():
+    """load_expressions_from_file should raise FileNotFoundError for missing files."""
+    with pytest.raises(FileNotFoundError):
+        load_expressions_from_file("/nonexistent/path/exprs.txt")

@@ -62,3 +62,15 @@ def test_suggest_weekday():
     results = suggest("weekday")
     exprs = [r[0] for r in results]
     assert "0 9 * * 1-5" in exprs
+
+
+def test_suggest_empty_string_returns_empty():
+    """An empty query should return no results rather than everything."""
+    results = suggest("")
+    assert results == []
+
+
+def test_suggest_max_results_zero():
+    """max_results=0 should return an empty list."""
+    results = suggest("daily", max_results=0)
+    assert results == []

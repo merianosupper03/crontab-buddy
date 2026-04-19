@@ -49,6 +49,16 @@ def test_delete_missing_returns_false(tmp_archive):
     assert result is False
 
 
+def test_delete_only_removes_matching(tmp_archive):
+    """Deleting one expression should leave other entries intact."""
+    archive_expression("0 5 * * *", path=tmp_archive)
+    archive_expression("0 6 * * *", path=tmp_archive)
+    delete_from_archive("0 5 * * *", path=tmp_archive)
+    entries = get_archive(path=tmp_archive)
+    assert len(entries) == 1
+    assert entries[0]["expression"] == "0 6 * * *"
+
+
 def test_clear_archive(tmp_archive):
     archive_expression("* * * * *", path=tmp_archive)
     clear_archive(path=tmp_archive)

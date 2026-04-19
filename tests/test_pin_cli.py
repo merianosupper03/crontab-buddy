@@ -55,6 +55,16 @@ def test_cmd_pin_list_shows_expressions(tp, capsys):
     assert "0 * * * *" in out
 
 
+def test_cmd_pin_list_shows_multiple_expressions(tp, capsys):
+    """All pinned expressions should appear in list output."""
+    pin_expression("0 * * * *", path=tp)
+    pin_expression("*/5 * * * *", path=tp)
+    cmd_pin_list(SimpleNamespace(), path=tp)
+    out = capsys.readouterr().out
+    assert "0 * * * *" in out
+    assert "*/5 * * * *" in out
+
+
 def test_cmd_pin_check_pinned(tp, capsys):
     pin_expression("*/10 * * * *", path=tp)
     cmd_pin_check(args("*/10 * * * *"), path=tp)

@@ -14,6 +14,7 @@ def _make_history(tmp_path: Path, entries):
 
 
 def _ts(days_ago: int = 0) -> str:
+    """Return an ISO timestamp for `days_ago` days in the past."""
     return (datetime.now() - timedelta(days=days_ago)).isoformat()
 
 
@@ -67,6 +68,16 @@ def test_recap_top_has_description(tmp_path):
     result = recap(days=7, path=path)
     assert "description" in result["top"][0]
     assert result["top"][0]["description"] != ""
+
+
+def test_recap_boundary_entry_included(tmp_path):
+    """An entry exactly at the boundary (days=7) should be included."""
+    entries = [
+        {"expression": "0 6 * * *", "timestamp": _ts(7)},
+    ]
+    path = _make_history(tmp_path, entries)
+    result = recap(days=7, path=path)
+    assert result["total_uses"] == 1
 
 
 def test_format_recap_contains_key_info(tmp_path):

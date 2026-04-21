@@ -12,13 +12,25 @@ from crontab_buddy.suggester import suggest, list_all
 
 
 def _print_next_runs(expr: CronExpression, count: int = 5) -> None:
+    """Print the next N scheduled run times for a cron expression."""
     runs = next_runs(expr, datetime.now(), count=count)
     print(f"Next {count} runs:")
     for r in runs:
         print(f"  {r.strftime('%Y-%m-%d %H:%M')}")
 
 
+def _handle_export(expr: CronExpression, export_format: str, comment: str) -> None:
+    """Print the cron expression in the requested export format."""
+    if export_format == "crontab":
+        print(to_crontab_line(expr, comment))
+    elif export_format == "markdown":
+        print(to_markdown(expr, comment))
+    elif export_format == "json":
+        print(json.dumps(to_json_dict(expr, comment), indent=2))
+
+
 def main() -> None:
+    """Entry point for the crontab-buddy CLI."""
     parser = argparse.ArgumentParser(
         prog="crontab-buddy",
         description="Build, validate, and document cron expressions.",
@@ -50,12 +62,8 @@ def main() -> None:
         print(f"Expression : {expr}")
         print(f"Description: {humanize(expr)}")
 
-        if args.export == "crontab":
-            print(to_crontab_line(expr, args.comment))
-        elif args.export == "markdown":
-            print(to_markdown(expr, args.comment))
-        elif args.export == "json":
-            print(json.dumps(to_json_dict(expr, args.comment), indent=2))
+        if args.export:
+            _handle_export(expr, args.export, args.comment)
         else:
             _print_next_runs(expr, args.next)
 

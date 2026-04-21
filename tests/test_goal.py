@@ -25,6 +25,11 @@ def test_invalid_target_raises(tmp_goal):
         _goal.set_goal("* * * * *", 0, path=tmp_goal)
 
 
+def test_negative_target_raises(tmp_goal):
+    with pytest.raises(ValueError):
+        _goal.set_goal("* * * * *", -5, path=tmp_goal)
+
+
 def test_record_run_increments(tmp_goal):
     _goal.set_goal("0 0 * * *", 5, path=tmp_goal)
     c1 = _goal.record_run("0 0 * * *", path=tmp_goal)
@@ -44,6 +49,15 @@ def test_progress_ratio(tmp_goal):
     _goal.record_run("0 12 * * *", path=tmp_goal)
     p = _goal.progress("0 12 * * *", path=tmp_goal)
     assert p == pytest.approx(0.5)
+
+
+def test_progress_complete(tmp_goal):
+    """Progress should be 1.0 (or more) once count meets or exceeds target."""
+    _goal.set_goal("0 12 * * *", 2, path=tmp_goal)
+    _goal.record_run("0 12 * * *", path=tmp_goal)
+    _goal.record_run("0 12 * * *", path=tmp_goal)
+    p = _goal.progress("0 12 * * *", path=tmp_goal)
+    assert p >= 1.0
 
 
 def test_progress_no_goal_returns_none(tmp_goal):

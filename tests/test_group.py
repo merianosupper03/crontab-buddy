@@ -61,6 +61,10 @@ def test_remove_missing_returns_false(tmp_group):
     assert remove_from_group("g", "0 9 * * *", tmp_group) is False
 
 
+def test_remove_from_missing_group_returns_false(tmp_group):
+    assert remove_from_group("nonexistent", "0 9 * * *", tmp_group) is False
+
+
 def test_get_missing_group_returns_none(tmp_group):
     assert get_group("nonexistent", tmp_group) is None
 
@@ -81,3 +85,7 @@ def test_list_groups(tmp_group):
     groups = list_groups(tmp_group)
     assert "a" in groups
     assert "b" in groups
+
+
+def test_list_groups_empty(tmp_group):
+    assert list_groups(tmp_group) == []

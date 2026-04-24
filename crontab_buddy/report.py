@@ -54,3 +54,23 @@ def format_report(report: List[Dict[str, Any]]) -> str:
                 lines.append(f"  Next runs: {', '.join(entry['next_runs'])}")
         lines.append("")
     return "\n".join(lines).rstrip()
+
+
+def summary_stats(report: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Return basic counts from a built report.
+
+    Returns a dict with:
+      - total: number of expressions evaluated
+      - valid: number of valid expressions
+      - invalid: number of invalid expressions
+      - with_hints: number of valid expressions that have at least one lint hint
+    """
+    total = len(report)
+    valid = sum(1 for e in report if e["valid"])
+    with_hints = sum(1 for e in report if e["valid"] and e["hints"])
+    return {
+        "total": total,
+        "valid": valid,
+        "invalid": total - valid,
+        "with_hints": with_hints,
+    }

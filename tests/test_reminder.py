@@ -50,3 +50,12 @@ def test_list_reminders_multiple(tmp_reminder):
 def test_message_is_stripped(tmp_reminder):
     set_reminder("* * * * *", "  trimmed  ", path=tmp_reminder)
     assert get_reminder("* * * * *", path=tmp_reminder) == "trimmed"
+
+
+def test_set_reminder_raises_on_empty_message(tmp_reminder):
+    """set_reminder should reject blank or whitespace-only messages."""
+    with pytest.raises(ValueError):
+        set_reminder("0 9 * * 1", "", path=tmp_reminder)
+
+    with pytest.raises(ValueError):
+        set_reminder("0 9 * * 1", "   ", path=tmp_reminder)
